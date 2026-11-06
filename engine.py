@@ -283,6 +283,15 @@ class LCMEngine(ContextEngine):
       5. Active context = system prompt + DAG summaries + fresh tail
     """
 
+    @staticmethod
+    def _coerce_threshold_tokens_cap(value):
+        """Match Hermes 0.23 live-compression cap normalization."""
+        try:
+            ivalue = int(value) if value is not None else 0
+        except (TypeError, ValueError):
+            return None
+        return ivalue if ivalue > 0 else None
+
     def __init__(self, config: LCMConfig | None = None,
                  hermes_home: str = ""):
         self._config = config or LCMConfig.from_env()
